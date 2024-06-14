@@ -1,63 +1,65 @@
 ﻿import 'dart:io';
 import 'dart:math';
 
+class GameLevel {
+  final int min;
+  final int max;
+  final String name;
+  final int baseScore;
+
+  GameLevel(this.min, this.max, this.name, this.baseScore);
+}
+
 void main() {
+  var easy = GameLevel(1, 50, 'Easy', 500);
+  var medium = GameLevel(1, 100, 'Medium', 1000);
+  var hard = GameLevel(1, 200, 'Hard', 2000);
+
   print('=== Number Guessing Game ===');
-  print('Select difficulty:');
-  print('1. Easy (1-50)');
-  print('2. Medium (1-100)');
-  print('3. Hard (1-200)');
+  print('1. ');
+  print('2. ');
+  print('3. ');
   
-  stdout.write('Choice: ');
-  int difficulty = int.tryParse(stdin.readLineSync() ?? '') ?? 2;
+  stdout.write('Select: ');
+  int choice = int.tryParse(stdin.readLineSync() ?? '') ?? 2;
   
-  int maxNum = 100;
-  int baseScore = 1000;
-  if (difficulty == 1) {
-    maxNum = 50;
-    baseScore = 500;
-  }
-  if (difficulty == 3) {
-    maxNum = 200;
-    baseScore = 2000;
-  }
+  GameLevel level = medium;
+  if (choice == 1) level = easy;
+  if (choice == 3) level = hard;
   
   var random = Random();
-  int target = random.nextInt(maxNum) + 1;
+  int target = random.nextInt(level.max - level.min + 1) + level.min;
   int attempts = 0;
 
-  print('Guess a number between 1 and ');
+  print('Guess a number between  and ');
 
   while (true) {
-    stdout.write('Your guess: ');
+    stdout.write('Guess: ');
     String? input = stdin.readLineSync();
     
-    if (input == null || input.isEmpty) {
-      print('Please enter a number');
-      continue;
-    }
+    if (input == null || input.isEmpty) continue;
     
     int? guess = int.tryParse(input);
     if (guess == null) {
-      print('Please enter a valid number');
+      print('Invalid number');
       continue;
     }
     
-    if (guess < 1 || guess > maxNum) {
-      print('Number must be between 1 and ');
+    if (guess < level.min || guess > level.max) {
+      print('Out of range');
       continue;
     }
     
     attempts++;
     
     if (guess < target) {
-      print('Too low!');
+      print('Too low');
     } else if (guess > target) {
-      print('Too high!');
+      print('Too high');
     } else {
-      int score = max(0, baseScore - (attempts * 50));
-      print('Correct! You won in  attempts');
-      print('Your score:  points');
+      int score = max(0, level.baseScore - (attempts * 50));
+      print('Won in  attempts!');
+      print('Score: ');
       break;
     }
   }
