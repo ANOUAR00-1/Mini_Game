@@ -11,16 +11,36 @@ class GameLevel {
 }
 
 void main() {
+  while (true) {
+    print('\n--- Main Menu ---');
+    print('1. Play Game');
+    print('2. Exit');
+    
+    stdout.write('Choice: ');
+    String? choice = stdin.readLineSync();
+    
+    if (choice == '2') {
+      print('Thanks for playing!');
+      break;
+    } else if (choice == '1') {
+      playGame();
+    } else {
+      print('Invalid option');
+    }
+  }
+}
+
+void playGame() {
   var easy = GameLevel(1, 50, 'Easy', 500);
   var medium = GameLevel(1, 100, 'Medium', 1000);
   var hard = GameLevel(1, 200, 'Hard', 2000);
 
-  print('=== Number Guessing Game ===');
+  print('\nSelect difficulty:');
   print('1. ');
   print('2. ');
   print('3. ');
   
-  stdout.write('Select: ');
+  stdout.write('Choice: ');
   int choice = int.tryParse(stdin.readLineSync() ?? '') ?? 2;
   
   GameLevel level = medium;
@@ -31,7 +51,7 @@ void main() {
   int target = random.nextInt(level.max - level.min + 1) + level.min;
   int attempts = 0;
 
-  print('Guess a number between  and ');
+  print('Guess between  and ');
 
   while (true) {
     stdout.write('Guess: ');
@@ -41,7 +61,7 @@ void main() {
     
     int? guess = int.tryParse(input);
     if (guess == null) {
-      print('Invalid number');
+      print('Invalid');
       continue;
     }
     
@@ -58,8 +78,7 @@ void main() {
       print('Too high');
     } else {
       int score = max(0, level.baseScore - (attempts * 50));
-      print('Won in  attempts!');
-      print('Score: ');
+      print('Won! Attempts: , Score: ');
       break;
     }
   }
