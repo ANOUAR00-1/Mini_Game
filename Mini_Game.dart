@@ -22,10 +22,8 @@ class Stats {
   }
   
   void display() {
-    print('\n--- Statistics ---');
-    print('Games Played: ');
-    print('Wins: ');
-    print('Total Score: ');
+    print('\n--- Stats ---');
+    print('Games:  | Wins:  | Score: ');
   }
 }
 
@@ -33,16 +31,12 @@ Stats stats = Stats();
 
 void main() {
   while (true) {
-    print('\n--- Main Menu ---');
-    print('1. Play Game');
-    print('2. View Stats');
-    print('3. Exit');
-    
-    stdout.write('Choice: ');
+    print('\n1. Play | 2. Stats | 3. Exit');
+    stdout.write('> ');
     String? choice = stdin.readLineSync();
     
     if (choice == '3') {
-      print('Bye!');
+      print('Goodbye!');
       break;
     } else if (choice == '1') {
       playGame();
@@ -59,39 +53,40 @@ void playGame() {
     GameLevel(1, 200, 'Hard', 2000),
   ];
 
-  print('\nSelect:');
-  for (int i = 0; i < levels.length; i++) {
-    print('. ');
-  }
-  
-  stdout.write('Choice: ');
-  int choice = int.tryParse(stdin.readLineSync() ?? '') ?? 2;
+  print('\n1. Easy | 2. Medium | 3. Hard');
+  stdout.write('> ');
+  int choice = int.tryParse(stdin.readLineSync() ?? '2') ?? 2;
   GameLevel level = levels[choice - 1] ?? levels[1];
   
   var random = Random();
   int target = random.nextInt(level.max - level.min + 1) + level.min;
   int attempts = 0;
 
-  print('Guess -');
+  print('Range: -');
 
   while (true) {
     stdout.write('Guess: ');
     int? guess = int.tryParse(stdin.readLineSync() ?? '');
     
     if (guess == null || guess < level.min || guess > level.max) {
-      print('Invalid');
+      print('Invalid!');
       continue;
     }
     
     attempts++;
+    int diff = (guess - target).abs();
     
     if (guess < target) {
-      print('Low');
+      if (diff > 20) print('Too low!');
+      else if (diff > 5) print('A bit low');
+      else print('Very close! Go higher');
     } else if (guess > target) {
-      print('High');
+      if (diff > 20) print('Too high!');
+      else if (diff > 5) print('A bit high');
+      else print('Very close! Go lower');
     } else {
       int score = max(0, level.baseScore - (attempts * 50));
-      print('Won! Attempts: , Score: ');
+      print('Correct!  attempts | Score: ');
       stats.recordWin(score);
       break;
     }
