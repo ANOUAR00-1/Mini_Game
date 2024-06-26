@@ -14,16 +14,31 @@ class Stats {
   int gamesPlayed = 0;
   int wins = 0;
   int totalScore = 0;
+  int highScore = 0;
+  List<int> topScores = [];
   
   void recordWin(int score) {
     gamesPlayed++;
     wins++;
     totalScore += score;
+    if (score > highScore) highScore = score;
+    
+    topScores.add(score);
+    topScores.sort((a, b) => b.compareTo(a));
+    if (topScores.length > 5) topScores = topScores.sublist(0, 5);
   }
   
   void display() {
-    print('\n--- Stats ---');
-    print('Games:  | Wins:  | Score: ');
+    print('\n--- Statistics ---');
+    print('Games:  | Wins: ');
+    print('Total Score:  | High Score: ');
+  }
+  
+  void showLeaderboard() {
+    print('\n--- Top 5 Scores ---');
+    for (int i = 0; i < topScores.length; i++) {
+      print('.  points');
+    }
   }
 }
 
@@ -31,17 +46,19 @@ Stats stats = Stats();
 
 void main() {
   while (true) {
-    print('\n1. Play | 2. Stats | 3. Exit');
+    print('\n1. Play | 2. Stats | 3. Leaderboard | 4. Exit');
     stdout.write('> ');
     String? choice = stdin.readLineSync();
     
-    if (choice == '3') {
-      print('Goodbye!');
+    if (choice == '4') {
+      print('Thanks for playing!');
       break;
     } else if (choice == '1') {
       playGame();
     } else if (choice == '2') {
       stats.display();
+    } else if (choice == '3') {
+      stats.showLeaderboard();
     }
   }
 }
@@ -79,14 +96,14 @@ void playGame() {
     if (guess < target) {
       if (diff > 20) print('Too low!');
       else if (diff > 5) print('A bit low');
-      else print('Very close! Go higher');
+      else print('Very close! Higher');
     } else if (guess > target) {
       if (diff > 20) print('Too high!');
       else if (diff > 5) print('A bit high');
-      else print('Very close! Go lower');
+      else print('Very close! Lower');
     } else {
       int score = max(0, level.baseScore - (attempts * 50));
-      print('Correct!  attempts | Score: ');
+      print('Won!  tries | Score: ');
       stats.recordWin(score);
       break;
     }
