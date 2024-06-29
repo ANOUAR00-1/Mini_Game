@@ -30,14 +30,20 @@ class Stats {
   
   void display() {
     print('\n--- Statistics ---');
-    print('Games:  | Wins: ');
-    print('Total Score:  | High Score: ');
+    print('Games Played: ');
+    print('Wins: ');
+    print('Total Score: ');
+    print('High Score: ');
   }
   
   void showLeaderboard() {
     print('\n--- Top 5 Scores ---');
-    for (int i = 0; i < topScores.length; i++) {
-      print('.  points');
+    if (topScores.isEmpty) {
+      print('No scores yet. Start playing!');
+    } else {
+      for (int i = 0; i < topScores.length; i++) {
+        print('.  points');
+      }
     }
   }
 }
@@ -45,9 +51,14 @@ class Stats {
 Stats stats = Stats();
 
 void main() {
+  print('Number Guessing Game v1.0');
+  
   while (true) {
-    print('\n1. Play | 2. Stats | 3. Leaderboard | 4. Exit');
-    stdout.write('> ');
+    print('\n1. Play Game');
+    print('2. View Stats');
+    print('3. Leaderboard');
+    print('4. Exit');
+    stdout.write('Select: ');
     String? choice = stdin.readLineSync();
     
     if (choice == '4') {
@@ -70,8 +81,12 @@ void playGame() {
     GameLevel(1, 200, 'Hard', 2000),
   ];
 
-  print('\n1. Easy | 2. Medium | 3. Hard');
+  print('\nSelect Difficulty:');
+  print('1. Easy (1-50)');
+  print('2. Medium (1-100)');
+  print('3. Hard (1-200)');
   stdout.write('> ');
+  
   int choice = int.tryParse(stdin.readLineSync() ?? '2') ?? 2;
   GameLevel level = levels[choice - 1] ?? levels[1];
   
@@ -79,14 +94,19 @@ void playGame() {
   int target = random.nextInt(level.max - level.min + 1) + level.min;
   int attempts = 0;
 
-  print('Range: -');
+  print('\nGuess a number between  and ');
 
   while (true) {
-    stdout.write('Guess: ');
+    stdout.write('Your guess: ');
     int? guess = int.tryParse(stdin.readLineSync() ?? '');
     
-    if (guess == null || guess < level.min || guess > level.max) {
-      print('Invalid!');
+    if (guess == null) {
+      print('Please enter a valid number');
+      continue;
+    }
+    
+    if (guess < level.min || guess > level.max) {
+      print('Number must be between  and ');
       continue;
     }
     
@@ -94,16 +114,26 @@ void playGame() {
     int diff = (guess - target).abs();
     
     if (guess < target) {
-      if (diff > 20) print('Too low!');
-      else if (diff > 5) print('A bit low');
-      else print('Very close! Higher');
+      if (diff > 20) {
+        print('Too low!');
+      } else if (diff > 5) {
+        print('A bit low, getting warmer!');
+      } else {
+        print('Very close! Slightly higher.');
+      }
     } else if (guess > target) {
-      if (diff > 20) print('Too high!');
-      else if (diff > 5) print('A bit high');
-      else print('Very close! Lower');
+      if (diff > 20) {
+        print('Too high!');
+      } else if (diff > 5) {
+        print('A bit high, getting warmer!');
+      } else {
+        print('Very close! Slightly lower.');
+      }
     } else {
       int score = max(0, level.baseScore - (attempts * 50));
-      print('Won!  tries | Score: ');
+      print('\nCongratulations! You guessed it!');
+      print('Attempts: ');
+      print('Score:  points');
       stats.recordWin(score);
       break;
     }
